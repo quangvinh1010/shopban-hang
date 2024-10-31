@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -14,8 +15,63 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $productList = Product::all();
-        return view('products.index', ['productList' => $productList]);
+        $categories = Category::all();
+        $priceRanges = [
+            '0-50' => [0, 50],
+            '100-200' => [50, 100],
+            '200-300' => [100, 200],
+            '300-400' => [200, 300],
+        ];
+
+        $priceCounts = [];
+        foreach ($priceRanges as $range => $prices) {
+            $priceCounts[$range] = Product::whereBetween('price', $prices)->count();
+        }
+
+        $query = Product::query();
+
+        // Filter by price ranges
+        if ($request->has('price')) {
+            $selectedPriceRanges = $request->input('price');
+            $query->where(function ($query) use ($selectedPriceRanges, $priceRanges) {
+                foreach ($selectedPriceRanges as $range) {
+                    if (isset($priceRanges[$range])) {
+                        $query->orWhereBetween('price', $priceRanges[$range]);
+                    }
+                }
+            });
+        }
+        // Filter by category
+        if ($request->has('category')) {
+            $selectedCategories = $request->input('category');
+            $query->whereHas('categories', function ($query) use ($selectedCategories) {
+                $query->whereIn('id', $selectedCategories);
+            });
+        }
+
+
+        // Search by product name
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'LIKE', "%$search%");
+        }
+
+        // Sort products
+        if ($request->has('sort')) {
+            $sort = $request->input('sort');
+            if ($sort == 'asc') {
+                $query->orderBy('name', 'asc');
+            } elseif ($sort == 'desc') {
+                $query->orderBy('name', 'desc');
+            } elseif ($sort == 'latest') {
+                $query->orderBy('created_at', 'desc');
+            }
+        }
+
+        $productList = $query->paginate(6);
+
+        return view('Products.index', ['productList' => $productList, 'priceCounts' => $priceCounts, 'categories' => $categories]);
+        
     }
 
     /**

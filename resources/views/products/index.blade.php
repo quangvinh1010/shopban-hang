@@ -7,7 +7,7 @@
 		<div class="container">
 			<div class="row no-gutters slider-text align-items-center justify-content-center">
 				<div class="col-md-9 ftco-animate text-center">
-					<p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home</a></span></p>
+					<p class="breadcrumbs"><span class="mr-2"><a href="index.html"></a></span></p>
 					<h1 class="mb-0 bread">Shop</h1>
 				</div>
 			</div>
@@ -46,7 +46,7 @@
 										<p class="price"><span>{{ $product->price }}</span></p>
 									</div>
 									<p class="bottom-area d-flex px-3">
-										<a href="cart.html" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
+										<a href="{{ route('products.show', $product->id) }}" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
 													class="ion-ios-add ml-1"></i></span></a>
 										<a href="product-single.html" class="buy-now text-center py-2">Buy now<span><i
 													class="ion-ios-cart ml-1"></i></span></a>
@@ -71,29 +71,21 @@
 					</div>
 				</div>
 
-				<div class="col-md-4 col-lg-2">
-					<div class="sidebar">
-						<div class="sidebar-box-2">
-							<h2 class="heading">MENU</h2>
-							<div class="fancy-collapse-panel">
-								<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-									<div class="panel panel-default">
-										<h4><a href="shopnam.html">Shop Nam</a></li></h4>
-									</div>
-									<div class="panel panel-default">
-									<h4><a href="shopnu.html">Shop Nữ</a></li></h4>
-									</div>
-									<div class="panel panel-default">
-										<h4><a href="shopdodoi.html">Đồ Đôi</a></li></h4>
+				<!-- Price Start -->
+			<div class="border-bottom mb-4 pb-4" style="margin-right: 50px;">
+                <h5 class="font-weight-semi-bold mb-4">Filter by price</h5>
+                <form id="filterForm" method="GET" action="{{ route('products.index') }}">
+                    @foreach($priceCounts as $range => $count)
+                    <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                        <input type="checkbox" class="custom-control-input" name="price[]" value="{{ $range }}" id="price-{{ $loop->index }}" onchange="document.getElementById('filterForm').submit();">
+                        <label class="custom-control-label" for="price-{{ $loop->index }}">{{ $range }}</label>
+                        <span class="badge border font-weight-normal">{{ $count }}</span>
+                    </div>
+                    @endforeach
+                </form>
+            </div>
+            <!-- Price End -->
 			
-										</div>
-								</div>
-							</div>
-							
-						</div>
-					</div>
-				</div>
-
 			</div>
 			
 		</div>

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\Category;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,11 +14,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        // Lấy tất cả danh mục từ bảng categories
-        $categories = Category::all();
-
-        // Truyền biến categories sang view
-        return view('home', compact('categories'));
+        //
     }
 
     /**
@@ -39,14 +35,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
-
-        $category = Category::create($request->all());
-
-        return response()->json($category, 201);
+        //
     }
 
     /**
@@ -57,9 +46,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $category = Category::where('id', $id)->first(); // Retrieve a single category
-        $products = $category->products; // Access products related to this category
-        return view('home.category', compact('category', 'products'));
+        //
     }
 
     /**
@@ -82,7 +69,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return Category::findOrFail($id)->update($request);
+        //
     }
 
     /**
@@ -93,6 +80,6 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        return Category::findOrFail($id)->destroy();
+        //
     }
 }
