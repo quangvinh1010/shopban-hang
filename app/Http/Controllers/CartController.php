@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,10 @@ class CartController extends Controller
     {
         $cart = session()->get('cart', []);
 
-        //Tính tổng số lượng sản phẩm trong giỏ hàng
+        // Dump the cart to debug
+        // dd($cart);
+
+        // Calculate total quantity of items in the cart
         $totalQuantity = 0;
         foreach ($cart as $item) {
             $totalQuantity += $item['quantity'];
@@ -27,21 +31,21 @@ class CartController extends Controller
             'totalQuantity' => $totalQuantity,
         ]);
     }
-
     /**
-     * Show the form for creating a new resource.
+     * Add a product to the cart.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function addToCart(Request $request)
     {
         $product_id = $request->input('product_id');
         $quantity = $request->input('quantity', 1);
-    
+
         $product = Product::findOrFail($product_id);
-    
+
         $cart = session()->get('cart', []);
-    
+
         if (isset($cart[$product_id])) {
             $cart[$product_id]['quantity'] += $quantity;
         } else {
@@ -52,33 +56,33 @@ class CartController extends Controller
                 'img' => $product->img // Ensure the img key is set here
             ];
         }
-    
+
         session()->put('cart', $cart);
-    
+
         return redirect()->route('cart.index')->with('success', 'Product added to cart successfully!');
     }
 
-  
+
     // Other methods like edit, update, destroy, and getItemCount can be defined here
 
     public function destroy($id)
-{
-    $cart = session()->get('cart', []);
+    {
+        $cart = session()->get('cart', []);
 
-    if(isset($cart[$id])) {
-        unset($cart[$id]);
-        session()->put('cart', $cart);
+        if (isset($cart[$id])) {
+            unset($cart[$id]);
+            session()->put('cart', $cart);
+        }
+
+        return redirect()->route('cart.index')->with('success', 'Product removed from cart successfully!');
     }
-
-    return redirect()->route('cart.index')->with('success', 'Product removed from cart successfully!');
-}
 
     public function update(Request $request, $id)
     {
         $quantity = $request->input('quantity');
         $cart = session()->get('cart', []);
 
-        if(isset($cart[$id])) {
+        if (isset($cart[$id])) {
             $cart[$id]['quantity'] = $quantity;
             session()->put('cart', $cart);
             return redirect()->route('cart.index')->with('success', 'Cart updated successfully!');
@@ -87,4 +91,5 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('error', 'Product not found in cart!');
     }
 
+    
 }

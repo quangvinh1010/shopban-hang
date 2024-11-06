@@ -14,24 +14,14 @@ return new class extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            // Check if the phone column exists, if not, create it
-            if (!Schema::hasColumn('orders', 'phone')) {
-                $table->string('phone', 15)->nullable(); // Adjust the datatype and length as needed
-            }
-            // Modify the phone column
-            $table->string('phone', 15)->nullable()->change();
+            $table->string('phone', 15)->nullable(); // Adjust the length and nullable as needed
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::table('orders', function (Blueprint $table) {
-            //
+            $table->dropColumn('phone');
         });
     }
 };

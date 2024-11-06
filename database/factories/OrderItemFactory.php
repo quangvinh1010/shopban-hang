@@ -17,9 +17,10 @@ class OrderItemFactory extends Factory
     public function definition()
     {
         return [
+           'product_id' => 1,
             'order_id' => 1,
-            'product_id' => 1,
-           'amount' => fake()->randomDigit(),
+            'quantity' => fake()->randomDigit(),
+            'price' => fake()->randomDigit()
         ];
     }
 }

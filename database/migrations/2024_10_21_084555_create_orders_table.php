@@ -11,19 +11,21 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('desc');
+            $table->string('code');
+            $table->string('status');
+            $table->string('phone', 15)->change();
+            // tao khoa ngoai
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');   
-            $table->integer('status');  
-            $table->string('receiver');      
+            $table->foreign('user_id')->references('id')->on('users');
+            // end tao khoa ngoai
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

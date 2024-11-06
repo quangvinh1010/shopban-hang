@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -14,11 +15,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        // Lấy tất cả danh mục từ bảng categories
-        $categories = Category::all();
-
-        // Truyền biến categories sang view
-        return view('home', compact('categories'));
+        $categories = Category::with('products')->get(); // Fetch all categories and their products
+        return view('list-product', compact('categories'));
     }
 
     /**
@@ -39,14 +37,8 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
-
-        $category = Category::create($request->all());
-
-        return response()->json($category, 201);
+        return $request;
+        return Category::create($request->only(['name', 'email', 'password']));
     }
 
     /**
@@ -55,11 +47,10 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($categoryId)
     {
-        $category = Category::where('id', $id)->first(); // Retrieve a single category
-        $products = $category->products; // Access products related to this category
-        return view('home.category', compact('category', 'products'));
+        $category = Category::with('products')->findOrFail($categoryId); // Get the specific category with products
+        return view('home.category', compact('category'));
     }
 
     /**

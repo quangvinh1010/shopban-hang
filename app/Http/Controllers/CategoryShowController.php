@@ -18,7 +18,6 @@ class CategoryShowController extends Controller
         $products = $category->products; // Assuming you have a relationship defined in Category model
         return view('products.show', compact('products'));
     }
-    
 
     /**
      * Show the form for creating a new resource.
@@ -49,8 +48,7 @@ class CategoryShowController extends Controller
      */
     public function show($id)
     {
-        $categories = Category::all(); // Assuming you have a Category model
-        return view('your_view_file', compact('categories'));
+        //
     }
 
     /**

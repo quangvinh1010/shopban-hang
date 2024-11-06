@@ -11,28 +11,29 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('order_id');
-            $table->foreign('order_id')->references('id')->on('orders');  
+            // tao khoa ngoai
             $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id')->references('id')->on('products');   
-            $table->integer('amount'); 
+            $table->foreign('product_id')->references('id')->on('products');
+            // end tao khoa ngoai
+            // tao khoa ngoai
+            $table->unsignedBigInteger('order_id');
+            $table->foreign('order_id')->references('id')->on('orders');
+            // end tao khoa ngoai
+            $table->integer('quantity');
+            $table->double('price');
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('order_items', function (Blueprint $table) {
-            $table->decimal('amount', 8, 2); 
-        });
+        Schema::dropIfExists('order_items');
     }
 };

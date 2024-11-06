@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Post;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -15,10 +16,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $productList = Product::all();
-        return view('home.index', ['productList' => $productList]);
-        $categories = Category::all(); // Lấy tất cả các danh mục
-        return view('home', compact('categories'));
+        $categoryList = Category::all(); 
+        $productList = Product::all(); 
+        $posts = Post::all();
+
+        return view('home.index', compact('categoryList', 'productList', 'posts')); // Pass both categories and products to the view
     }
 
     /**
@@ -50,7 +52,14 @@ class HomeController extends Controller
      */
     public function show($id)
     {
-        //
+        // Lấy tất cả danh mục
+        $categories = Category::all();
+
+        // Lấy sản phẩm theo ID (thay đổi tên model theo tên model của bạn)
+        $product = Product::findOrFail($id); // Hoặc cách khác tùy theo logic của bạn
+
+        // Truyền biến đến view
+        return view('products.show', compact('categories', 'product'));
     }
 
     /**
@@ -89,7 +98,8 @@ class HomeController extends Controller
 
     public function contact()
     {
-        //
-        return view('home.contact');
+        $categories = Category::all(); // Lấy tất cả các categories từ database
+        return view('home.contact', compact('categories'));
+
     }
 }

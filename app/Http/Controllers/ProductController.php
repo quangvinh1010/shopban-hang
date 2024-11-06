@@ -103,8 +103,15 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::findOrFail($id);
-        return view('products.show', ['product' => $product]);
+        // Lấy tất cả danh mục
+        $categories = Category::all();
+
+        // Lấy sản phẩm theo ID (thay đổi tên model theo tên model của bạn)
+        $product = Product::findOrFail($id); // Hoặc cách khác tùy theo logic của bạn
+
+        $products = Product::all()->keyBy('id'); 
+        // Truyền biến đến view
+        return view('products.show', compact('categories', 'product'));
     }
 
 
