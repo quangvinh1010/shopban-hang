@@ -4,6 +4,12 @@
 
 @section('content')
 
+<div class="container-fluid bg-secondary mb-5" style="background-image: url('images/bgr1.jpg'); width: 100%">
+  <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+      
+  </div>
+</div>
+
 <section class="ftco-section contact-section bg-light">
       <div class="container">
       	<div class="row d-flex mb-5 contact-info">

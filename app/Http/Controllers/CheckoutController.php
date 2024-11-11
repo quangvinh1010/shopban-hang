@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
@@ -13,9 +14,10 @@ class CheckoutController extends Controller
     // Display the checkout page
     public function index()
     {
+        $categories = Category::all();
         $total = $this->calculateCartTotal();
         $user = Auth::user(); // Get the authenticated user
-        return view('home.checkout', compact('total', 'user'));
+        return view('home.checkout', compact('total', 'user', 'categories'));
     }
 
     // Handle the order placement request
@@ -43,6 +45,7 @@ class CheckoutController extends Controller
             'phone.required' => 'Vui lòng nhập số điện thoại của bạn.',
             'code.required' => 'Vui lòng nhập mã đơn hàng.',
         ]);
+        
 
         try {
             DB::beginTransaction(); // Start a database transaction

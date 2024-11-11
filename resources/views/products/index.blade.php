@@ -3,12 +3,12 @@
 @section('title', 'List Product')
 
 @section('content')
-<div class="hero-wrap hero-bread" style="background-image: url('images/bg_6.jpg');">
+<div class="hero-wrap hero-bread" style="background-image: url('images/backgout.png');">
 	<div class="container">
 		<div class="row no-gutters slider-text align-items-center justify-content-center">
 			<div class="col-md-9 ftco-animate text-center">
 				<p class="breadcrumbs"><span class="mr-2"><a href="index.html"></a></span></p>
-				<h1 class="mb-0 bread">Shop</h1>
+				<h1 class="mb-0 bread">{{ $categoryName }}</h1>
 			</div>
 		</div>
 	</div>
@@ -78,7 +78,7 @@
 					</div>
 				</div>
 			</div>
-
+			
 			<!-- Price Start -->
 			<div class="border-bottom mb-4 pb-4" style="margin-right: 50px;">
 				<h5 class="font-weight-semi-bold mb-4">Filter by price</h5>

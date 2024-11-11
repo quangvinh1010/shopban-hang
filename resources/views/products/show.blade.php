@@ -3,6 +3,16 @@
 @section('title', 'List Product')
 
 @section('content')
+<div class="hero-wrap hero-bread" style="background-image: url('images/backgout.png');">
+	<div class="container">
+		<div class="row no-gutters slider-text align-items-center justify-content-center">
+			<div class="col-md-9 ftco-animate text-center">
+				<p class="breadcrumbs"><span class="mr-2"><a href="index.html"></a></span></p>
+				<h1 class="mb-0 bread"></h1>
+			</div>
+		</div>
+	</div>
+</div>
 
 <section class="ftco-section">
 		<div class="container">
@@ -69,7 +79,7 @@
 						<input type="hidden" name="product_id" value="{{ $product->id }}">
 						<input id="hiddenQuantity" type="hidden" name="quantity" value="1">
 						<button class="btn btn-primary btn-sm text-white p-2" type="submit" style="border-radius: 5px;">
-							<a href="">Add To Cart</a> 
+							<i class="">Add To Cart</i> 
 						</button>
 					</form>
 				</div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -10,7 +11,8 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::all(); // Lấy tất cả các bài viết
-        return view('blog.index', compact('posts'));
+        $categories = Category::all();
+        return view('blog.index', compact('posts', 'categories'));
     }
 
     public function create()

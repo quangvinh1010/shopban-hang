@@ -11,11 +11,13 @@ class Product extends Model
 
     protected $fillable = ['img', 'name', 'desc', 'price'];
 
-    public function category(){
-        return $this->belongsTo(Category::class);
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id'); // Đảm bảo sử dụng category_id
     }
 
-    public function orderItems(){
+    public function orderItems()
+    {
         return $this->hasMany(OrderItem::class);
     }
 }

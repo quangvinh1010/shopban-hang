@@ -3,6 +3,15 @@
 @section('title', 'Login')
 
 @section('content')
+<div class="container-fluid bg-secondary mb-5" style="background-image: url('{{ asset('images/bgr2.png') }}'); background-size: cover; background-position: center center; background-repeat: no-repeat;">
+    <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+        <h1 class="font-weight-semi-bold text-uppercase mb-3">login</h1>
+        <div class="d-inline-flex">
+            <!-- Add content here -->
+        </div>
+    </div>
+</div>
+
 
     <section class="vh-100" style="margin-top: 100px; margin-bottom: 100px">
         <div class="container py-5 h-100">
@@ -40,22 +49,18 @@
 
                                         @if ($message = Session::get('error'))
                                             <div class="alert alert-success alert-block">
-
                                                 <button type="button" class="close" data-dismiss="alert">×</button>
-
                                                 <strong>{{ $message }}</strong>
-
                                             </div>
                                         @endif
+
                                         <div class="form-outline mb-4">
-                                            <input name="email" type="email" id="email"
-                                                class="form-control form-control-lg" required />
+                                            <input name="email" type="email" id="email" class="form-control form-control-lg" value="{{ old('email') }}" required />
                                             <label class="form-label" for="email">Email address</label>
                                         </div>
 
                                         <div class="form-outline mb-4">
-                                            <input name="password" type="password" id="password"
-                                                class="form-control form-control-lg" required />
+                                            <input name="password" type="password" id="password" class="form-control form-control-lg" required />
                                             <label class="form-label" for="password">Password</label>
                                         </div>
 
@@ -63,7 +68,7 @@
                                             <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>
                                         </div>
 
-                                        <a class="small text-muted" href="#!">Forgot password?</a>
+                                        <a class="small text-muted" href="">Forgot password?</a>
                                         <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a
                                                 href="{{ route('register') }}" style="color: #393f81;">Register here</a></p>
                                         <a href="#!" class="small text-muted">Terms of use.</a>

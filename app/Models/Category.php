@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     use HasFactory;
-    protected $fillable =['name','description'];
+    protected $fillable = ['name', 'description'];
 
     // model relationship 
-    function products(){
-        return $this->hasMany(Product::class);
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'category_id'); // Đảm bảo sử dụng category_id
     }
 }

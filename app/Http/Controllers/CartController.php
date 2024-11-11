@@ -17,20 +17,20 @@ class CartController extends Controller
     {
         $cart = session()->get('cart', []);
 
-        // Dump the cart to debug
-        // dd($cart);
-
-        // Calculate total quantity of items in the cart
         $totalQuantity = 0;
         foreach ($cart as $item) {
             $totalQuantity += $item['quantity'];
         }
 
+        $categories = Category::all();
+
         return view('cart.index', [
             'cart' => $cart,
             'totalQuantity' => $totalQuantity,
+            'categories' => $categories,
         ]);
     }
+
     /**
      * Add a product to the cart.
      *
@@ -90,6 +90,4 @@ class CartController extends Controller
 
         return redirect()->route('cart.index')->with('error', 'Product not found in cart!');
     }
-
-    
 }

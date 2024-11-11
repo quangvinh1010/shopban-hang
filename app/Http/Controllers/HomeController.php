@@ -16,11 +16,12 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $categories = Category::all();
         $categoryList = Category::all(); 
         $productList = Product::all(); 
         $posts = Post::all();
 
-        return view('home.index', compact('categoryList', 'productList', 'posts')); // Pass both categories and products to the view
+        return view('home.index', compact('categories', 'categoryList', 'productList', 'posts')); // Pass both categories and products to the view
     }
 
     /**
@@ -100,6 +101,13 @@ class HomeController extends Controller
     {
         $categories = Category::all(); // Lấy tất cả các categories từ database
         return view('home.contact', compact('categories'));
+
+    }
+
+    public function about()
+    {
+        $categories = Category::all(); // Lấy tất cả các categories từ database
+        return view('home.about', compact('categories'));
 
     }
 }

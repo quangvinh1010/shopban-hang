@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('code');
-            $table->string('status');
+            $table->string('status')->default('pending')->change();
             $table->string('phone', 15)->change();
             // tao khoa ngoai
             $table->unsignedBigInteger('user_id');

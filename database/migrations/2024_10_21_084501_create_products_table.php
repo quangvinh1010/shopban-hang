@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('desc');
             $table->double('price');
             $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreignId('category_id')->constrained()->onDelete('cascade'); 
             $table->timestamps();
         });
     }

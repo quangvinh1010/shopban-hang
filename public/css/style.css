@@ -7479,6 +7479,7 @@ button.bg-primary:focus {
 
 .bg-secondary {
   background-color: #6c757d !important;
+  background-image: url('images/bgr1.png');
 }
 
 a.bg-secondary:hover,
@@ -7533,7 +7534,7 @@ button.bg-danger:focus {
 }
 
 .bg-light {
-  background-color: #f8f9fa !important;
+  background-color: #f1f1f1 !important;
 }
 
 a.bg-light:hover,
@@ -11790,6 +11791,38 @@ h5,
   padding: 0;
 }
 
+/* Hide submenu by default */
+.nav-item .submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  padding: 0.5rem;
+  list-style: none;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Show submenu on hover */
+.nav-item:hover .submenu {
+  display: block;
+}
+
+/* Style for submenu items */
+.nav-item .submenu li {
+  padding: 0.5rem 1rem;
+}
+
+.nav-item .submenu li a {
+  color: #000;
+  text-decoration: none;
+}
+
+.nav-item .submenu li a:hover {
+  color: #007bff;
+}
+
+
 @media (max-width: 991.98px) {
   .ftco-navbar-light {
     background: #000000 !important;
@@ -11913,7 +11946,7 @@ h5,
 }
 
 .ftco-navbar-light .navbar-nav>.nav-item.cta>a {
-  color: #000000;
+  color: white;
 }
 
 @media (max-width: 767.98px) {
@@ -11966,12 +11999,12 @@ h5,
 }
 
 .ftco-navbar-light.scrolled .nav-item.active>a {
-  color: #dbcc8f !important;
+  color: #000000 !important;
 }
 
 .ftco-navbar-light.scrolled .nav-item.cta>a {
   color: #000000 !important;
-  background: #dbcc8f;
+  background: white;
   border: none !important;
 }
 
@@ -11981,7 +12014,7 @@ h5,
 }
 
 .ftco-navbar-light.scrolled .nav-item.cta.cta-colored span {
-  border-color: #dbcc8f;
+  border-color: white;
 }
 
 .ftco-navbar-light.scrolled .nav-item .dropdown-menu {
@@ -12591,7 +12624,7 @@ h5,
 }
 
 .bg-light {
-  background: #f8f9fa !important;
+  background: #f1f1f1 !important;
 }
 
 .bg-primary {
@@ -12823,6 +12856,14 @@ h5,
   letter-spacing: 3px;
   font-size: 12px;
   z-index: 1;
+}
+
+.product {
+  border: 2px solid #ccc; /* Adjust color and thickness */
+  border-radius: 10px; /* Optional: Adds rounded corners */
+  overflow: hidden; /* Ensures content stays within the border */
+  padding: 10px; /* Adds spacing inside the border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
 }
 
 .product .img-prod img {
@@ -15333,3 +15374,4 @@ textarea.form-control {
     stroke-dashoffset: -136px;
   }
 }
+

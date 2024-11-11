@@ -17,10 +17,10 @@ class ProductController extends Controller
     {
         $categories = Category::all();
         $priceRanges = [
-            '0-50' => [0, 50],
-            '100-200' => [50, 100],
-            '200-300' => [100, 200],
-            '300-400' => [200, 300],
+            '50-100' => [50, 100],
+            '100-200' => [100, 200],
+            '200-300' => [200, 300],
+            '300-400' => [300, 400],
         ];
 
         $priceCounts = [];
@@ -41,13 +41,7 @@ class ProductController extends Controller
                 }
             });
         }
-        // Filter by category
-        if ($request->has('category')) {
-            $selectedCategories = $request->input('category');
-            $query->whereHas('categories', function ($query) use ($selectedCategories) {
-                $query->whereIn('id', $selectedCategories);
-            });
-        }
+
 
 
         // Search by product name
@@ -68,10 +62,23 @@ class ProductController extends Controller
             }
         }
 
-        $productList = $query->paginate(6);
+        $productList = $query->paginate(12);
 
-        return view('Products.index', ['productList' => $productList, 'priceCounts' => $priceCounts, 'categories' => $categories]);
-        
+        $categoryId = $request->query('category');
+
+        if ($categoryId) {
+            $category = Category::findOrFail($categoryId);
+            $productList = $category->products; // Sử dụng quan hệ để truy vấn sản phẩm
+        } else {
+            $productList = Product::all();
+        }
+
+        return view('Products.index', [
+            'productList' => $productList,
+            'categoryName' => $categoryId ? $category->name : 'All Products',
+            'priceCounts' => $priceCounts,
+            'categories' => $categories
+        ]);
     }
 
     /**
@@ -92,7 +99,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-       //
+        //
     }
 
     /**
@@ -103,16 +110,19 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        // Lấy tất cả danh mục
+
         $categories = Category::all();
+        // Lấy sản phẩm theo ID
+        $product = Product::findOrFail($id);
 
-        // Lấy sản phẩm theo ID (thay đổi tên model theo tên model của bạn)
-        $product = Product::findOrFail($id); // Hoặc cách khác tùy theo logic của bạn
+        // Lấy danh sách tất cả sản phẩm (tạo productList)
+        $productList = Product::all(); // You can modify this to a more specific query if needed
 
-        $products = Product::all()->keyBy('id'); 
         // Truyền biến đến view
-        return view('products.show', compact('categories', 'product'));
+        return view('products.show', compact('product', 'productList', 'categories'));
     }
+
+
 
 
     /**
@@ -135,7 +145,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-       //
+        //
     }
 
     /**
@@ -147,5 +157,16 @@ class ProductController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getProductsByCategory($id)
+    {
+        $category = Category::findOrFail($id);
+        $productList = $category->products;
+
+        return view('products.index', [
+            'categoryName' => $category->name,
+            'productList' => $productList
+        ]);
     }
 }

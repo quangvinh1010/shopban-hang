@@ -21,9 +21,10 @@
         </div>
     </div>
 </div>
+
 <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
     <div class="container">
-        <a class="navbar-brand" href="index.html">Vnshop</a>
+        <a class="navbar-brand" href="{{ url('home') }}">VnShop</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav"
             aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="oi oi-menu"></span> Menu
@@ -32,49 +33,66 @@
         <div class="collapse navbar-collapse" id="ftco-nav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item"><a href="{{ url('home') }}" class="nav-link">Home</a></li>
-                <li class="nav-item dropdown active">
-                    <a class="nav-link dropdown-toggle" href="{{ url('products') }}">Shop</a>
-                  
-
+                <li class="nav-item dropdown">
+                    <a href="{{ url('products') }}" class="nav-link">Shop</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ url('products') }}"></a>
+                        @foreach ($categories as $category)
+                            <a class="dropdown-item" href="{{ url('products?category=' . $category->id) }}">
+                                {{ $category->name }}
+                            </a>
+                        @endforeach
+                    </div>
                 </li>
-                <li class="nav-item active"><a href="about.html" class="nav-link">About</a></li>
-                <li class="nav-item"><a href="{{ route('blog.index') }}" class="nav-link">Blog</a></li>
+
+
+                <li class="nav-item active"><a href="{{ url('about') }}" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="{{ url('blog') }}" class="nav-link">Blog</a>
                 <li class="nav-item"><a href="{{ url('contact') }}" class="nav-link">Contact</a></li>
-                <div class="col-lg-6 col-6 text-left">
+
+                <div class="col-lg-4 col-6" style="margin-left: 130px">
                     <form action="{{ route('home.search') }}" method="GET">
-                        <div class="input-group" style="margin-top: 9px">
-                            <input type="text" name="search" class="form-control" placeholder="Search for products">
+                        <div class="input-group mt-2 mb-1 shadow-sm rounded">
+                            <input type="text" name="search" class="form-control border-0"
+                                placeholder="Search for products"
+                                style="border-top-left-radius: 20px; border-bottom-left-radius: 20px;">
                             <div class="input-group-append">
-                                <button type="submit" class="input-group-text bg-transparent text-primary">
+                                <button type="submit" class="input-group-text bg-primary text-white border-0"
+                                    style="border-top-right-radius: 20px; border-bottom-right-radius: 20px;">
                                     <i class="fa fa-search"></i>
                                 </button>
                             </div>
                         </div>
                     </form>
                 </div>
-                <li class="nav-item cta cta-colored"><a href="{{ url('cart') }}" class="nav-link"><span
-                            class="icon-shopping_cart"></span></a></li>\
+
+                <li class="nav-item cta cta-colored">
+                    <a href="{{ url('cart') }}" class="nav-link" style="margin-top: auto">
+                        <span class="icon-shopping_cart" style=" color: white; font-size: 30px; "></span>
+                    </a>
+                </li>
 
 
-                @if (Auth::check())
-                    <li class="nav-item cta cta-colored">
-                        <a href="{{ route('logout') }}" class="nav-link">
-                            <span class="fa-solid fa-right-from-bracket"></span>
-                        </a>
+                @if (Auth('cus')->check())
+                    <li class="nav-item cta cta-colored" style="position: relative; margin-top: 1rem;">
+                        <a href="{{ route('profile') }}">{{ Auth('cus')->user()->name }}</a>
+
+                        <!-- Submenu -->
+                        <ul class="submenu">
+                            <li><a href="{{ route('profile') }}">Profile</a></li>
+                            <li><a href="{{ route('change_password') }}">Change Password</a></li>
+                            <li><a href="{{ route('logout') }}">Logout</a></li>
+                        </ul>
                     </li>
                 @else
                     <li class="nav-item cta cta-colored">
-                        <a href="{{ route('login') }}" class="nav-link">
-                            <span class="fa-solid fa-user"></span>
+                        <a href="{{ route('login') }}" class="nav-link" style="margin-top: 5px">
+                            <span class="fa-solid fa-user" style="font-size: 25px"></span>
                         </a>
                     </li>
                 @endif
 
-
-
-
             </ul>
-
         </div>
     </div>
 </nav>
