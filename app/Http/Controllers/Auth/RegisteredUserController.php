@@ -43,16 +43,16 @@ class RegisteredUserController extends Controller
 
         if ($acc = Customer::create($data)) {
             Mail::to($acc->email)->send(new VerifyAccount($acc));
-            return redirect()->route('login')->with('ok', 'Register successfully, please check your email to verify account');
+            return redirect()->route('login')->with('ok', 'Đăng ký thành công, vui lòng kiểm tra email để xác minh tài khoản.');
         }
 
-        return redirect()->back()->with('no', 'Something went wrong, please try again');
+        return redirect()->back()->with('no', 'Đã xảy ra lỗi, vui lòng thử lại.');
     }
 
     public function verify_account($email)
     {
         $acc = Customer::where('email', $email)->whereNULL('email_verified_at')->firstOrFail();
         $acc->update(['email_verified_at' => now()]);
-        return redirect()->route('login')->with('ok', 'Account verified successfully, you can now log in');
+        return redirect()->route('login')->with('ok', 'Tài khoản đã được xác minh thành công, bây giờ bạn có thể đăng nhập.');
     }
 }

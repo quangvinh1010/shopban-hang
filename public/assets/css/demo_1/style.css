@@ -162,6 +162,17 @@
 .navbar-nav .nav-item {
     line-height: 1;
 }
+
+  /* Adjust text in the navbar and footer to contrast */
+  .navbar .nav-link,
+  .footer span {
+    color: rgb(0, 0, 0) !important;
+  }
+
+  .sidebar .nav-link {
+    color: rgb(0, 0, 0) !important;
+  }
+
 @media (max-width: 992px) {
     .nav .nav-item.dropdown,
     .navbar-nav .nav-item.dropdown {
@@ -786,7 +797,7 @@
     width: 10px;
     height: 10px;
     border-radius: 100%;
-    border: 2px solid #fff;
+    border: 2px solid #ffffff;
     display: block;
 }
 .sidebar > .nav:not(.sub-menu) > .nav-item > .nav-link {
@@ -799,7 +810,7 @@
     > .nav:not(.sub-menu)
     > .nav-item:hover:not(.nav-profile):not(.hover-open)
     > .nav-link:not([aria-expanded="true"]) {
-    background: #0f25d5;
+    background: #2196f3;
     padding-left: 65px;
 }
 .sidebar
@@ -1086,4 +1097,35 @@
 #dashboard-vmap .jvectormap-zoomout {
     display: none;
 }
+
+.delete-btn {
+    background-color: rgb(255, 0, 0);
+    color: rgb(255, 255, 255);
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    width: 30px; /* Đặt chiều rộng cố định */
+    height: 30px; /* Đặt chiều cao cố định */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Tạo nút hình tròn */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Tạo hiệu ứng bóng */
+    transition: all 0.3s ease; /* Hiệu ứng chuyển đổi mượt mà */
+}
+
+.delete-btn i {
+    font-size: 16px; /* Điều chỉnh kích thước biểu tượng */
+}
+
+.delete-btn:hover {
+    background-color: #0056b3; /* Đổi màu nền khi hover */
+    color: rgb(255, 255, 255); /* Đổi màu biểu tượng khi hover */
+    transform: scale(1.1); /* Phóng to nhẹ khi hover */
+}
+
+.table-primary {
+    background-color: #ffffff;
+}
+
 

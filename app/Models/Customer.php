@@ -20,6 +20,9 @@ class Customer extends Authenticatable
         'name', 'email',  'phone', 'address', 'gender', 'password', 'confirm_password', 'email_verified_at',
     ];
     
+    public function carts(){
+        return $this->hasMany(Cart::class, 'customer_id', 'id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

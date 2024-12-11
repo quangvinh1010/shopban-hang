@@ -17,8 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('img');
             $table->string('name');
-            $table->string('desc');
+            $table->string('desc')->nullable()->change();
             $table->double('price');
+            $table->double('sale_price')->nullable()->after('price');
             $table->unsignedBigInteger('category_id');
             $table->foreignId('category_id')->constrained()->onDelete('cascade'); 
             $table->timestamps();

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Order;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -14,9 +17,15 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return Order::all();
-    }
 
+        $orders = Order::with('customer')
+            ->where('customer_id', auth('cus')->id())
+            ->get();
+
+        $categories = Category::all();
+        $vouchers = Voucher::all();
+        return view('orders.index', compact('orders', 'categories', 'vouchers'));
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -35,7 +44,17 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        return Order::created($request->all());
+        $order = new Order();
+        $order->customer_id = $request->user()->id; // Lấy ID người dùng
+        $order->phone = $request->phone;
+        $order->status = 'pending';
+        $order->code = 'ORD-' . strtoupper(Str::random(8)); // Tạo mã đơn hàng
+        $order->save();
+
+        return response()->json([
+            'message' => 'Order created successfully!',
+            'order' => $order,
+        ]);
     }
 
     /**
@@ -46,7 +65,8 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        return Order::findOrFail($id);
+        $order = Order::findOrFail($id);
+        return view('orders.show', compact('order'));
     }
 
     /**
@@ -57,7 +77,8 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
-        //
+        $order = Order::findOrFail($id);
+        return view('orders.edit', compact('order'));
     }
 
     /**
@@ -67,19 +88,42 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Order $order)
     {
-        return Order::findOrFail($id)->update($request);
+        // Validate the input
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:15',
+            'address' => 'required|string|max:255',
+        ]);
+
+        // Update the order with the validated data
+        $order->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'address' => $request->address,
+        ]);
+
+        return redirect()->route('orders.index')->with('message', 'Đơn hàng đã được cập nhật.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function checkout(Request $req)
     {
-        return Order::findOrFail($id)->destroy();
+        // Các bước xử lý thanh toán khác...
+
+        // Nếu có voucher được áp dụng
+        $voucherCode = session('voucher_code');
+        if ($voucherCode) {
+            $voucher = Voucher::where('code', $voucherCode)->first();
+
+            if ($voucher) {
+                $voucher->increment('used_count');
+            }
+        }
+
+        // Xóa voucher khỏi session sau khi thanh toán thành công
+        session()->forget(['voucher_code', 'voucher_discount', 'newTotalAmount']);
+
+        return redirect()->route('checkout.success')->with('success', 'Thanh toán thành công!');
     }
 }

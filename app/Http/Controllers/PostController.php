@@ -17,26 +17,32 @@ class PostController extends Controller
 
     public function create()
     {
-        return view('blog.create');
+        $categories = Category::all();
+        return view('blog.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required',
+        // Validate the request
+        $validated = $request->validate([
+            'title' => 'required|max:255',
             'content' => 'required',
-            'thumbnail' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Kiểm tra ảnh
+            'image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
-    
-        $data = $request->all();
-    
-        if ($request->hasFile('thumbnail')) {
-            $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
-            $data['thumbnail'] = $thumbnailPath;
+
+        // Create a new post
+        $post = new Post();
+        $post->title = $request->title;
+        $post->content = $request->content;
+
+        // Handle image upload if there's one
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('images', 'public');
+            $post->image = $imagePath;
         }
-    
-        Post::create($data);
-    
-        return redirect()->route('posts.index');
+
+        $post->save();
+
+        return redirect()->route('posts.index')->with('success', 'Bài viết được tạo thành công!');
     }
 }

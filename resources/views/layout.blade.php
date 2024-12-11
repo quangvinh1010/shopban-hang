@@ -99,6 +99,15 @@
                 position: 'top-center',
             })
         </script>
+
+        
+@if(session('voucher_code'))
+    <p>Voucher Code: {{ session('voucher_code') }}</p>
+    <p>Discount: {{ session('discount') }}</p>
+    <p>New Total: {{ session('newTotalAmount') }}</p>
+@else
+    <p>Total: {{ session('totalAmount') }}</p>
+@endif
     @endif
 
 </body>

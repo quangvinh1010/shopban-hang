@@ -2,112 +2,91 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderMail;
+use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Mail;
+use Illuminate\Support\Str;
+
+
 
 class CheckoutController extends Controller
 {
-    // Display the checkout page
-    public function index()
+    public function checkout(Request $request)
     {
+        $auth = auth('cus')->user();
         $categories = Category::all();
-        $total = $this->calculateCartTotal();
-        $user = Auth::user(); // Get the authenticated user
-        return view('home.checkout', compact('total', 'user', 'categories'));
+        return view('home.checkout', compact('auth', 'categories'));
     }
 
-    // Handle the order placement request
-    public function placeOrder(Request $request)
-    {
-        // Ensure the user is logged in before proceeding
-        if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Bạn cần đăng nhập để đặt hàng.');
-        }
+    public function post_checkout(Request $rep)
+{
+    $auth = auth('cus')->user();
 
-        // Validate the incoming request data
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'status' => 'nullable|string|max:255', // Optional
-            'phone' => 'required|string|max:15',
-            'code' => 'required|string|max:50',
-            'receiver' => 'required|string|max:255',
-        ], [
-            'name.required' => 'Vui lòng nhập tên của bạn.',
-            'address.required' => 'Vui lòng nhập địa chỉ.',
-            'email.required' => 'Vui lòng nhập email của bạn.',
-            'receiver.required' => 'Vui lòng nhập tên người nhận.',
-            'phone.required' => 'Vui lòng nhập số điện thoại của bạn.',
-            'code.required' => 'Vui lòng nhập mã đơn hàng.',
-        ]);
-        
+    $rep->validate([
+        'name' => 'required',
+        'email' => 'required|email',
+        'phone' => 'required',
+        'address' => 'required',
+    ]);
 
-        try {
-            DB::beginTransaction(); // Start a database transaction
+    $data = $rep->only(['name', 'email', 'phone', 'address']);
+    $data['customer_id'] = $auth->id;
+    $data['status'] = 0;
+    $data['token'] = Str::random(40);
 
-            // Create a new order
-            $order = new Order();
-            $order->user_id = Auth::id();
-            $order->code = $validatedData['code'];
-            $order->email = $validatedData['email'];
-            $order->phone = $validatedData['phone'];
-            $order->total = $this->calculateCartTotal() + 10; // Total includes shipping
-            $order->status = $validatedData['status'] ?? 'pending'; // Default status
-            $order->receiver = $validatedData['receiver'];
+    try {
+        \DB::transaction(function () use ($auth, $data) {
+            // Lưu thông tin đơn hàng
+            $order = Order::create($data);
 
-            // Save order to database
-            if (!$order->save()) {
-                throw new \Exception('Could not save order.');
+            // Lưu các sản phẩm trong giỏ hàng vào bảng `order_items`
+            $orderItems = [];
+            foreach ($auth->carts as $cart) {
+                $orderItems[] = [
+                    'order_id' => $order->id,
+                    'product_id' => $cart->product_id,
+                    'price' => $cart->price,
+                    'quantity' => $cart->quantity,
+                ];
             }
+            OrderItem::insert($orderItems);
 
-            // Check if 'cart' session exists and is not empty
-            $cart = $request->session()->get('cart');
-            if (!empty($cart)) {
-                foreach ($cart as $item) {
-                    if (is_array($item) && isset($item['product_id'])) {
-                        $orderItem = new OrderItem();
-                        $orderItem->order_id = $order->id;
-                        $orderItem->product_id = $item['product_id'];
-                        $orderItem->quantity = $item['quantity'];
-                        $orderItem->price = $item['price'];
+            // Xóa giỏ hàng sau khi đặt hàng thành công
+            Cart::where('customer_id', $auth->id)->delete();
 
-                        // Save the order item
-                        if (!$orderItem->save()) {
-                            throw new \Exception('Could not save order item.');
-                        }
-                    }
-                }
+            // Gửi email xác nhận đơn hàng
+            Mail::to($auth->email)->queue(new OrderMail($order->load('details.product'), $order->token));
+        });
 
-                // Clear cart session after order placement
-                $request->session()->forget('cart');
+        // Xóa dữ liệu liên quan đến giỏ hàng trong session
+        session()->forget(['cart_items', 'totalAmount', 'voucher_code', 'discount', 'newTotalAmount']);
 
-                DB::commit(); // Commit the transaction
-
-                // Redirect user after successful order
-                return redirect()->route('home.checkout')->with('success', 'Đặt hàng thành công!');
-            } else {
-                return redirect()->route('home.checkout')->with('error', 'Không có sản phẩm trong giỏ hàng.');
-            }
-        } catch (\Exception $e) {
-            DB::rollBack(); // Rollback the transaction in case of error
-            return redirect()->route('home.checkout')->with('error', 'Đặt hàng thất bại: ' . $e->getMessage());
-        }
+        return redirect()->route('home.index')->with('ok', 'Thanh toán đơn hàng thành công.');
+    } catch (\Exception $e) {
+        \Log::error('Order Processing Failed: ' . $e->getMessage());
+        return redirect()->route('home.index')->with('no', 'Đã xảy ra lỗi, vui lòng thử lại.');
     }
+}
 
-    // Calculate the total price of the items in the cart
-    private function calculateCartTotal()
+
+
+    public function verify($token)
     {
-        $total = 0;
-        if (session('cart')) {
-            foreach (session('cart') as $item) {
-                $total += $item['price'] * $item['quantity'];
-            }
+        $order = Order::where('token', $token)->first();
+
+        if ($order) {
+            $order->update([
+                'token' => null,    // Xóa token sau khi xác minh
+                'status' => 1,      // Đặt trạng thái thành "đã xác minh" (1)
+            ]);
+
+            return redirect()->route('home.index')->with('ok', 'Xác nhận đơn hàng thành công!');
         }
-        return $total;
+
+        return redirect()->route('home.index')->with('no', 'Không tìm thấy đơn hàng.');
     }
 }

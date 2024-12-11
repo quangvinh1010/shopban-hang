@@ -4,26 +4,20 @@
 
 @section('content')
 <!-- Page Header Start -->
-<div class="container-fluid bg-secondary mb-5" style="background-image: url('images/result_bgr2.png'); width: 100%">
+<div class="container-fluid bg-secondary mb-5" style="background-image: url('images/bgr1.jpg'); width: 100%">
     <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-        <h1 class="font-weight-semi-bold text-uppercase mb-3">Shopping Cart</h1>
-        <div class="d-inline-flex">
-            <p class="m-0"><a href="">Home</a></p>
-            <p class="m-0 px-2">-</p>
-            <p class="m-0">Shopping Cart</p>
-        </div>
+        
     </div>
-</div>
+  </div>
 <!-- Page Header End -->
-<div class="container">
 
+<div class="container">
     <div class="row">
         @foreach($productSearch as $product)
         <div class="col-sm-12 col-md-6 col-lg-3 ftco-animate d-flex">
-
             <div class="product d-flex flex-column">
-                <a href="{{ route('products.show', $product->id) }}" class="img-prod"><img class="img-fluid" src="{{ url($product->img )}}"
-                        alt="Colorlib Template">
+                <a href="{{ route('products.show', $product->id) }}" class="img-prod">
+                    <img class="img-fluid" src="{{ url($product->img) }}" alt="{{ $product->name }}">
                     <div class="overlay"></div>
                 </a>
                 <div class="text py-3 pb-4 px-3">
@@ -43,13 +37,22 @@
                     </div>
                     <h3><a href="{{ route('products.show', $product->id) }}">{{ $product->name }}</a></h3>
                     <div class="pricing">
-                        <p class="price"><span>{{ $product->price }}</span></p>
+                        @if ($product->sale_price > 0)
+                            <p class="price" style="color: red">
+                                <span><s>{{ number_format($product->price) }}</s></span>
+                            </p>
+                            <p class="sale-price"><span>{{ number_format($product->sale_price) }}</span></p>
+                        @else
+                            <p class="price">
+                                <span style="font-weight: bold;">{{ number_format($product->price) }}</span>
+                            </p>
+                        @endif
                     </div>
                     <div class="card-footer d-flex justify-content-between bg-light border">
                         <a href="{{ route('products.show', $product->id) }}" class="btn btn-sm text-dark p-0" style="margin-top: 7px;">
                             <i class="fas fa-eye text-primary mr-1"></i>View Detail
                         </a>
-                        <form id="addToCartForm" method="POST" action="{{ route('cart.add') }}" class="d-inline">
+                        <form id="addToCartForm" method="POST" action="{{ route('cart.add', ['product' => $product->id]) }}" class="d-inline">
                             @csrf
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
                             <input id="hiddenQuantity" type="hidden" name="quantity" value="1">
@@ -57,7 +60,6 @@
                                 <i class="fas fa-shopping-cart mr-1"></i> Add To Cart
                             </button>
                         </form>
-
                     </div>
                 </div>
             </div>

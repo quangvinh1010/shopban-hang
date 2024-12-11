@@ -10,9 +10,5 @@ class Post extends Model
     use HasFactory;
 
     // Thêm trường 'title', 'content' và '_token' vào fillable
-    protected $fillable = [
-        'title',
-        'content',
-        'thumbnail',
-    ];
+    protected $fillable = ['title', 'content', 'image']; 
 }

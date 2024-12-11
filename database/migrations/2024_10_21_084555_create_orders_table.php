@@ -13,14 +13,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::table('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
-            $table->string('status')->default('pending')->change();
+            $table->string('code')->unique();
+            $table->integer('status')->default('chưa xác nhận');
             $table->string('phone', 15)->change();
+            $table->string('address')->nullable();
             // tao khoa ngoai
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('customer_id'); 
+            $table->foreign('customer_id')->references('id')->on('customer');
             // end tao khoa ngoai
             $table->timestamps();
         });

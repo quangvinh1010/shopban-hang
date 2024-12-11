@@ -1,6 +1,6 @@
 @extends('layout')
 
-@section('title', 'Contact')
+@section('title', 'LIỆN HỆ')
 
 @section('content')
 

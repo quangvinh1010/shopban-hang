@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Product;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -17,11 +18,14 @@ class HomeController extends Controller
     public function index()
     {
         $categories = Category::all();
-        $categoryList = Category::all(); 
-        $productList = Product::all(); 
+        $categoryList = Category::all();
+        $vouchers = Voucher::latest()->take(3)->get();
+         
         $posts = Post::all();
-
-        return view('home.index', compact('categories', 'categoryList', 'productList', 'posts')); // Pass both categories and products to the view
+        $new_product = Product::orderBy('created_at', 'DESC')->limit(4)->get();
+        $sale_product = Product::orderBy('created_at', 'DESC')->where('sale_price', '>', 0)->limit(4)->get();
+        $featrure_product = Product::inRandomOrder()->limit(4)->get();
+        return view('home.index', compact('categories', 'categoryList', 'posts', 'new_product', 'sale_product', 'featrure_product', 'vouchers')); // Pass both categories and products to the view
     }
 
     /**

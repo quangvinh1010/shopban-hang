@@ -12,15 +12,15 @@ return new class extends Migration
      * @return void
      */
     public function up()
-{
-    Schema::create('posts', function (Blueprint $table) {
-        $table->id();
-        $table->string('thumbnail')->nullable(); 
-        $table->string('title');
-        $table->text('content');
-        $table->timestamps();
-    });
-}
+    {
+        Schema::create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('content');
+            $table->string('image')->nullable();
+            $table->timestamps();
+        });
+    }
 
 
     /**
@@ -31,7 +31,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('posts', function (Blueprint $table) {
-            $table->dropColumn('thumbnail');
+            $table->dropColumn('image'); // Xóa cột image nếu rollback
         });
     }
 };

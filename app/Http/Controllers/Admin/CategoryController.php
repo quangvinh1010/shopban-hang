@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -14,7 +15,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::all(); // Lấy toàn bộ category
+        return view('admin.category.index', compact('categories'));
     }
 
     /**
@@ -24,7 +26,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.category.create');
     }
 
     /**
@@ -35,7 +37,15 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'status' => 'required|boolean',
+            'desc' => 'nullable|string|max:500', // Optional or adjust as needed
+        ]);
+
+        Category::create($request->only(['name', 'status', 'desc']));
+
+        return redirect()->route('admin.category.index')->with('success', 'Category created successfully.');
     }
 
     /**
@@ -55,9 +65,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Category $category)
     {
-        //
+        return view('admin.category.edit');
     }
 
     /**
@@ -67,9 +77,16 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Category $category)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'status' => 'required|boolean',
+        ]);
+
+        $category->update($request->only(['name', 'status']));
+
+        return redirect()->route('admin.category.index')->with('success', 'Category updated successfully.');
     }
 
     /**

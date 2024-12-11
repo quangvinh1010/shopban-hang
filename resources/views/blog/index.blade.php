@@ -7,19 +7,12 @@
     <div class="hero-wrap hero-bread" style="background-image: url('images/bg_6.jpg');">
         <div class="container">
             <div class="row no-gutters slider-text align-items-center justify-content-center">
-                <div class="col-md-9 ftco-animate text-center">
-                    <h1>Blog Posts</h1>
-                    <a href="{{ route('posts.create') }}">Create New Post</a>
-                    <ul>
-                        @foreach ($posts as $post)
-                            
-                        @endforeach
-                    </ul>
-                    <h1 class="mb-0 bread"></h1>
-                </div>
+                <h1 class="mb-0 bread">Blog Posts</h1> <!-- Added heading here -->
             </div>
         </div>
     </div>
+
+    
 
     <section class="ftco-section ftco-degree-bg">
         <div class="container">
@@ -28,20 +21,24 @@
                     <div class="row">
                         <ul>
                             @foreach ($posts as $post)
-                                <li>
-                                    <h2>{{ $post->title }}</h2>
-                                    <p>{{ $post->content }}</p> <!-- Hiển thị nội dung -->
-                                    <p><a href="{{ route('posts.index', $post->id) }}">Đọc thêm</a></p>
-                                    <!-- Link đến trang chi tiết -->
+                                <li style="display: flex; align-items: center; margin-bottom: 20px;">
+                                    @if ($post->image)
+                                        <img src="{{ asset('storage/' . $post->image) }}" alt="Post image" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
+                                    @endif
+                                    <div style="flex-grow: 1; padding-right: 20px;">
+                                        <h2>{{ $post->title }}</h2>
+                                        <p>{{ Str::limit($post->content, 150) }}</p> <!-- Shortened content to 150 characters -->
+                                    </div>
+                                    <p><a href="{{ route('posts.show', $post->id) }}">Read more</a></p> <!-- Link to post details -->
                                 </li>
                             @endforeach
                         </ul>
-
-                    </div>
-                    <div class="row mt-2">
-
                     </div>
                 </div> <!-- .col-md-8 -->
+                <div class="col-md-9 ftco-animate text-center">
+                    <a href="{{ route('posts.create') }}" class="btn btn-primary">Create New Post</a> 
+                    
+                </div>
                 <div class="col-lg-4 sidebar ftco-animate">
                     <div class="sidebar-box">
                         <form action="#" class="search-form">
@@ -61,46 +58,6 @@
                             <li><a href="#">Sports <span>(14)</span></a></li>
                             <li><a href="#">Lifestyle <span>(140)</span></a></li>
                         </ul>
-                    </div>
-
-                    <div class="sidebar-box ftco-animate">
-                        <h3 class="heading">Recent Blog</h3>
-                        <div class="block-21 mb-4 d-flex">
-                            <a class="blog-img mr-4" style="background-image: url(images/image_1.jpg);"></a>
-                            <div class="text">
-                                <h3 class="heading-1"><a href="#">Even the all-powerful Pointing has no control
-                                        about the blind texts</a></h3>
-                                <div class="meta">
-                                    <div><a href="#"><span class="icon-calendar"></span> April 27, 2019</a></div>
-                                    <div><a href="#"><span class="icon-person"></span> Admin</a></div>
-                                    <div><a href="#"><span class="icon-chat"></span> 19</a></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="block-21 mb-4 d-flex">
-                            <a class="blog-img mr-4" style="background-image: url(images/image_2.jpg);"></a>
-                            <div class="text">
-                                <h3 class="heading-1"><a href="#">Even the all-powerful Pointing has no control
-                                        about the blind texts</a></h3>
-                                <div class="meta">
-                                    <div><a href="#"><span class="icon-calendar"></span> April 27, 2019</a></div>
-                                    <div><a href="#"><span class="icon-person"></span> Admin</a></div>
-                                    <div><a href="#"><span class="icon-chat"></span> 19</a></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="block-21 mb-4 d-flex">
-                            <a class="blog-img mr-4" style="background-image: url(images/image_3.jpg);"></a>
-                            <div class="text">
-                                <h3 class="heading-1"><a href="#">Even the all-powerful Pointing has no control
-                                        about the blind texts</a></h3>
-                                <div class="meta">
-                                    <div><a href="#"><span class="icon-calendar"></span> April 27, 2019</a></div>
-                                    <div><a href="#"><span class="icon-person"></span> Admin</a></div>
-                                    <div><a href="#"><span class="icon-chat"></span> 19</a></div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="sidebar-box ftco-animate">
